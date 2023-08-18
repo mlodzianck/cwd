@@ -21,6 +21,7 @@ function FileUpload() {
 
 
 
+
   const navigate = useNavigate();
   const removeDiacritics = (inputString) => {
     return inputString.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -125,6 +126,11 @@ const Upload = () => {
   const [currentDocType,setCurrentDocType] = useState('')
   const [isActive,setIsActive] = useState(false)
   const navigate = useNavigate();
+  const samples = [
+    {file: "wyciag_bankowy.pdf", description: "Wyciąg bankowy", thumbfile: "wyciag_bankowy_thumb.jpg"},
+    {file: "umowa.pdf", description: "Umowa",thumbfile: "umowa_thumb.jpg"},
+  ]
+
   
   useEffect(() => {
     async function fetchCurrentDoc() {
@@ -168,10 +174,31 @@ const Upload = () => {
       </Row>
     </Row>}
     <Row className="justify-content-md-center justify-content-sm-center">
-      <Col md={4} sm={10}>
+      <Col md={4} sm={10} className='text-center'>
           <FileUpload />
 
       </Col>
+
+    </Row>
+    <Row className="justify-content-md-center justify-content-sm-center">
+      <Col md={4} sm={10} className='text-center'>
+          Lub wykorzystaj jeden z przykładów
+
+      </Col>
+
+    </Row>
+
+    <Row className="justify-content-md-center justify-content-sm-center">
+      {samples.map((o,i)=> {
+        return <Col md={2} sm={2} className='text-center'>
+          <div>
+            <a href={"/static/samples/"+o.file}>
+              <img src={o.thumbfile}/>
+            </a>
+          </div>
+          <div>{o.description}</div>
+          </Col>
+      })}
 
     </Row>
   </Container>

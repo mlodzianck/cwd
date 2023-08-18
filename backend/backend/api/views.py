@@ -21,17 +21,8 @@ def hello_world(request):
     return Response({"message": "Hello, world!"})
 
 
-@api_view(['POST'])
-@parser_classes([MultiPartParser])
-def upload_file(request):
-    request.session['type_of_doc'] = ""
-    if 'file' not in request.data:
-        return Response({'error': 'No file uploaded'}, status=status.HTTP_400_BAD_REQUEST)
-    file_obj = request.data['file']
-    path = default_storage.save('tmp/'+file_obj.name, ContentFile(file_obj.read()))
-    tmp_file = os.path.join(settings.MEDIA_ROOT, path)
-    doc_content = analyze(tmp_file)
-    os.remove(tmp_file)
+
+def process_content(request,doc_content):
     request.session['doc_content']=doc_content
     request.session['chat_messages']=[]
 
@@ -55,6 +46,30 @@ def upload_file(request):
     
     
     return Response(status=status.HTTP_200_OK)
+
+
+
+@api_view(['GET'])
+def process_sample(request):
+    file_path  = os.path.join("static/", request.GET.get("sampleName"))
+    doc_content = analyze(file_path)
+    return process_content(request,doc_content)
+
+
+
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser])
+def upload_file(request):
+    request.session['type_of_doc'] = ""
+    if 'file' not in request.data:
+        return Response({'error': 'No file uploaded'}, status=status.HTTP_400_BAD_REQUEST)
+    file_obj = request.data['file']
+    path = default_storage.save('tmp/'+file_obj.name, ContentFile(file_obj.read()))
+    tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+    doc_content = analyze(tmp_file)
+    os.remove(tmp_file)
+    return process_content(request,doc_content)
 
 @api_view()    
 def get_doc_type(request):

@@ -23,7 +23,7 @@ urlpatterns = [
 from django.urls import include, path
 from rest_framework import routers
 from backend.api import views
-from backend.api.views import hello_world, upload_file,get_doc_type,get_all_messages,ask,index, is_active
+from backend.api.views import hello_world, upload_file,get_doc_type,get_all_messages,ask,index, is_active, process_sample
 
 router = routers.DefaultRouter()
 
@@ -31,16 +31,16 @@ router = routers.DefaultRouter()
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    # path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
     path('myfn/', hello_world ),
     path('api/upload/', upload_file ),
-     path('api/get_doc_type/', get_doc_type ),
+    path('api/process_sample/', process_sample ),
+    path('api/get_doc_type/', get_doc_type ),
     path('api/get_all_messages/', get_all_messages ),
-     path('api/ask/', ask ),
-      path('api/is_active/', is_active ),
-     path("", index),
+    path('api/ask/', ask ),
+    path('api/is_active/', is_active ),
+    path("", index),
 	path("chat",index)
 
 
