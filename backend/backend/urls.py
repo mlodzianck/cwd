@@ -40,7 +40,8 @@ urlpatterns = [
     path('api/get_all_messages/', get_all_messages ),
      path('api/ask/', ask ),
       path('api/is_active/', is_active ),
-     path("", index)
+     path("", index),
+	path("chat",index)
 
 
 ]
