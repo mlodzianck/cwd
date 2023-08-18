@@ -60,6 +60,13 @@ def upload_file(request):
 def get_doc_type(request):
    return Response({"type_of_doc":request.session['type_of_doc']})
 
+@api_view()    
+def is_active(request):
+   is_active = "chat_messages" in request.session
+   if is_active:
+       is_active = is_active and len(request.session['chat_messages'])>0
+   return Response({"is_active":is_active})
+
 
 @api_view()    
 def get_all_messages(request):

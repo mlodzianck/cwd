@@ -23,7 +23,7 @@ urlpatterns = [
 from django.urls import include, path
 from rest_framework import routers
 from backend.api import views
-from backend.api.views import hello_world, upload_file,get_doc_type,get_all_messages,ask,index
+from backend.api.views import hello_world, upload_file,get_doc_type,get_all_messages,ask,index, is_active
 
 router = routers.DefaultRouter()
 
@@ -39,6 +39,7 @@ urlpatterns = [
      path('api/get_doc_type/', get_doc_type ),
     path('api/get_all_messages/', get_all_messages ),
      path('api/ask/', ask ),
+      path('api/is_active/', is_active ),
      path("", index)
 
 

@@ -7,7 +7,7 @@ import { styled } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Spinner } from 'react-bootstrap';
 
@@ -16,6 +16,10 @@ function FileUpload() {
   const [uploadStatus, setUploadStatus] = useState('');
   const [spinnerVisible, setSpinnerVisible] = useState(false);
   const [uploadDisabled, setUploadDisabled] = useState(false);
+
+
+
+
 
   const navigate = useNavigate();
   const removeDiacritics = (inputString) => {
@@ -98,7 +102,7 @@ function FileUpload() {
     <div>
       <Label>
         {!uploadDisabled &&<> <input type="file" onChange={handleFileChange} style={{ display: "none" }}/>
-        <div>Dodaj plik aby rozpocząć</div>
+        <div>Dodaj plik aby rozpocząć nowy chat</div>
         <div >
         <FontAwesomeIcon icon={faCirclePlus} size="2xl" style={{color: "#aab6cb",}} />
         </div> </>}
@@ -118,15 +122,51 @@ function FileUpload() {
 
 const Upload = () => {
   const [files, setFiles] = useState([]);
+  const [currentDocType,setCurrentDocType] = useState('')
+  const [isActive,setIsActive] = useState(false)
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    async function fetchCurrentDoc() {
+      const response = await fetch("/api/get_doc_type/");
+            const docTypeResponse= await response.json();
+            if (docTypeResponse.type_of_doc!="") {
+              setCurrentDocType(docTypeResponse.type_of_doc)
+            } else {
+              setCurrentDocType("Nieznany typ dokumentu")
+            }
+  }
+
+
+    async function fetchData() {
+        const response = await fetch("/api/is_active/");
+        const isActiveResponse= await response.json();
+        if (isActiveResponse.type_of_doc!="") {
+          setIsActive(isActiveResponse.is_active)
+          fetchCurrentDoc()
+        } 
+    }
+    fetchData();
+  }, []);
 
   return <Container style={{ paddingTop: "2em" }} fluid>
+
+
+   
     <Row className="justify-content-md-center justify-content-sm-center">
       <Col md={4} sm={10} className='text-center'>
           <h1>Chat with document</h1>
-
       </Col>
 
     </Row>
+    {isActive && <Row className="justify-content-md-center justify-content-sm-center">
+      <Col md={4} sm={10} className='text-center'>
+        <h3>  <a href='/chat'>Wróć do czatu z dokumentem: {currentDocType}</a></h3>
+      </Col>
+      <Row className="justify-content-md-center justify-content-sm-center">
+      <Col md={4} sm={10} className='text-center'>lub</Col>
+      </Row>
+    </Row>}
     <Row className="justify-content-md-center justify-content-sm-center">
       <Col md={4} sm={10}>
           <FileUpload />
